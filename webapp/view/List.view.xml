@@ -21,12 +21,7 @@
                 width="auto"
                 class="sapFDynamicPageAlignContent"
                 items="{
-                    path: '/GameSet',
-                    sorter: {
-                        path: 'Name',
-                        descending: false
-                    },
-                    groupHeaderFactory: '.createGroupHeader'
+                    path: 'json>/platforms'
                 }"
                 busyIndicatorDelay="{listView>/delay}"
                 noDataText="{listView>/noDataText}"
@@ -35,37 +30,11 @@
                 growingScrollToLoad="true"
                 updateFinished=".onUpdateFinished"
                 selectionChange=".onSelectionChange">
-
-                <headerToolbar>
-                    <OverflowToolbar>
-                        <SearchField
-                            id="searchField"
-                            showRefreshButton="true"
-                            tooltip="{i18n>listSearchTooltip}"
-                            search=".onSearch"
-                            width="auto">
-                            <layoutData>
-                                <OverflowToolbarLayoutData
-                                    minWidth="150px"
-                                    maxWidth="240px"
-                                    shrinkable="true"
-                                    priority="NeverOverflow"/>
-                            </layoutData>
-                        </SearchField>
-                        <ToolbarSpacer/>
-                        <Button
-                            id="sortButton"
-                            press=".onOpenViewSettings"
-                            icon="sap-icon://sort"
-                            type="Transparent"/>
-
-                    </OverflowToolbar>
-                </headerToolbar>
                 <items>
-                    <ObjectListItem
+                    <ObjectListItem id="_IDGenObjectListItem1"
                         type="Navigation"
                         press=".onSelectionChange"
-                        title="{Name}"
+                        title="{json>PlatformKey}"
                          />
                 </items>
             </List>

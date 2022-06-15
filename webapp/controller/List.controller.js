@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 sap.ui.define([
     "./BaseController",
     "sap/ui/model/json/JSONModel",
@@ -49,11 +50,11 @@ sap.ui.define([
                 oViewModel.setProperty("/delay", iOriginalBusyDelay);
             });
 
-            this.getView().addEventDelegate({
-                onBeforeFirstShow: function () {
-                    this.getOwnerComponent().oListSelector.setBoundMasterList(oList);
-                }.bind(this)
-            });
+            // this.getView().addEventDelegate({
+            //     onBeforeFirstShow: function () {
+            //         this.getOwnerComponent().oListSelector.setBoundMasterList(oList);
+            //     }.bind(this)
+            // });
 
             this.getRouter().getRoute("list").attachPatternMatched(this._onMasterMatched, this);
             this.getRouter().attachBypassed(this.onBypassed, this);
@@ -82,26 +83,7 @@ sap.ui.define([
          * @param {sap.ui.base.Event} oEvent the search event
          * @public
          */
-        onSearch: function (oEvent) {
-            if (oEvent.getParameters().refreshButtonPressed) {
-                // Search field's 'refresh' button has been pressed.
-                // This is visible if you select any list item.
-                // In this case no new search is triggered, we only
-                // refresh the list binding.
-                this.onRefresh();
-                return;
-            }
-
-            var sQuery = oEvent.getParameter("query");
-
-            if (sQuery) {
-                this._oListFilterState.aSearch = [new Filter("Name", FilterOperator.Contains, sQuery)];
-            } else {
-                this._oListFilterState.aSearch = [];
-            }
-            this._applyFilterSearch();
-
-        },
+        
 
         /**
          * Event handler for refresh event. Keeps filter, sort
@@ -245,6 +227,22 @@ sap.ui.define([
         _onMasterMatched:  function() {
             //Set the layout property of the FCL control to 'OneColumn'
             this.getModel("appView").setProperty("/layout", "OneColumn");
+            this._initData();
+        },
+
+        _initData() {
+            this.getModel().read('/PlatformSet',
+            {
+                urlParameters: '$expand=toGames',
+                success: function(oData) {
+                    const oModel = new sap.ui.model.json.JSONModel();
+                    oModel.setProperty('/platforms', oData.results)
+                    this.getView().setModel(oModel, 'json');
+                }.bind(this),
+                error: function(oError) {
+                    console.error(oError);
+                }
+            })
         },
 
         /**
@@ -257,8 +255,10 @@ sap.ui.define([
             var bReplace = !Device.system.phone;
             // set the layout property of FCL control to show two columns
             this.getModel("appView").setProperty("/layout", "TwoColumnsMidExpanded");
+            this.getOwnerComponent()._platform = oItem.getBindingContext("json").getModel().getProperty(`${oItem.getBindingContextPath()}`);
             this.getRouter().navTo("object", {
-                objectId : oItem.getBindingContext().getProperty("Id")
+                // objectId : oItem.getBindingContext().getProperty("Id")
+                objectId : oItem.getBindingContext("json").getModel().getProperty(`${oItem.getBindingContextPath()}/PlatformKey`)
             }, bReplace);
         },
 

@@ -9,16 +9,68 @@
         busy="{detailView>/busy}"
         busyIndicatorDelay="{detailView>/delay}">
         <semantic:titleHeading>
-            <Title
-                text="{Name}"
+            <Title id="_IDGenTitle1"
+                text="{json>/PlatformKey}"
                 level="H2"/>
         </semantic:titleHeading>
         <semantic:headerContent>
-            <ObjectAttribute title="{i18n>priceTitle}"/>
-            <ObjectNumber />
+                        <SearchField
+                            id="searchField"
+                            showRefreshButton="true"
+                            tooltip="{i18n>listSearchTooltip}"
+                            search=".onSearch"
+                            width="auto">
+                            <layoutData>
+                                <OverflowToolbarLayoutData id="_IDGenOverflowToolbarLayoutData1"
+                                    minWidth="150px"
+                                    maxWidth="240px"
+                                    shrinkable="true"
+                                    priority="NeverOverflow"/>
+                            </layoutData>
+                        </SearchField>
+                        <ToolbarSpacer id="_IDGenToolbarSpacer1"/>
         </semantic:headerContent>
         <semantic:content>
-
+        <Table
+                id="lineItemsList"
+                width="auto"
+                items="{json>/toGames/results}"
+                updateFinished=".onListUpdateFinished"
+                noDataText="{i18n>detailLineItemTableNoDataText}"
+                busyIndicatorDelay="{detailView>/lineItemTableDelay}">
+                <headerToolbar>
+                    <Toolbar id="_IDGenToolbar1">
+                        <Title
+                            id="lineItemsTitle"
+                            text="{detailView>/lineItemListTitle}"
+                            titleStyle="H3"
+                            level="H3"/>
+                    </Toolbar>
+                </headerToolbar>
+                <columns>
+                    <Column id="_IDGenColumn1">
+                        <Text id="_IDGenText1" text="{i18n>detailLineItemTableIDColumn}"/>
+                    </Column>
+                    <Column id="_IDGenColumn2"
+                        minScreenWidth="Tablet"
+                        demandPopin="true"
+                        hAlign="End">
+                        <Text id="_IDGenText2" text="{i18n>detailLineItemTableUnitNumberColumn}"/>
+                    </Column>
+                </columns>
+                <items>
+                    <ColumnListItem id="_IDGenColumnListItem1"
+                        type="Navigation"
+                        press=".onSelectionChange">
+                        <cells>
+                            <ObjectIdentifier id="_IDGenObjectIdentifier1"
+                                title="{json>Name}"
+                                text="{json>Developer}"/>
+                            <ObjectNumber id="_IDGenObjectNumber2" />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
         </semantic:content>
         <!--Semantic ShareMenu Buttons-->
         <semantic:sendEmailAction>
