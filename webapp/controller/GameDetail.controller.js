@@ -24,6 +24,7 @@ sap.ui.define([
             var oViewModel = new JSONModel({
                 busy: false,
                 delay: 0
+                lineItemListTitle : this.getResourceBundle().getText("detailLineItemTableHeading")
             });
 
             this.getRouter().getRoute("object").attachPatternMatched(this._onObjectMatched, this);

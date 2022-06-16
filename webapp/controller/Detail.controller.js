@@ -28,6 +28,8 @@ sap.ui.define([
             // detail page is busy indication immediately so there is no break in
             // between the busy indication for loading the view's meta data
             var oViewModel = new JSONModel({
+                isFilterBarVisible: true,
+                filterBarLabel: "",
                 busy: false,
                 delay: 0
             });
@@ -44,20 +46,6 @@ sap.ui.define([
         /* =========================================================== */
         /* event handlers                                              */
         /* =========================================================== */
-
-        /**
-         * Event handler when the share by E-Mail button has been clicked
-         * @public
-         */
-        onSendEmailPress: function () {
-            var oViewModel = this.getModel("detailView");
-
-            URLHelper.triggerEmail(
-                null,
-                oViewModel.getProperty("/shareSendEmailSubject"),
-                oViewModel.getProperty("/shareSendEmailMessage")
-            );
-        },
 
         /**
          * Updates the item count within the line item table's header
@@ -111,6 +99,11 @@ sap.ui.define([
             this._oList.getBinding("items").refresh();
         },
 
+        /**
+         * Event handler for the filter, sort and group buttons to open the ViewSettingsDialog.
+         * @param {sap.ui.base.Event} oEvent the button press event
+         * @public
+         */
         onOpenViewSettings: function (oEvent) {
             var sDialogTab = "filter";
             if (oEvent.getSource() instanceof sap.m.Button) {
@@ -127,7 +120,7 @@ sap.ui.define([
                     id: this.getView().getId(),
                     name: "be.ap.edu.zsdgamelist.view.ViewSettingsDialog",
                     controller: this
-                }).then(function(oDialog){
+                }).then(function (oDialog) {
                     // connect dialog to the root view of this component (models, lifecycle)
                     this.getView().addDependent(oDialog);
                     oDialog.addStyleClass(this.getOwnerComponent().getContentDensityClass());
@@ -148,7 +141,7 @@ sap.ui.define([
          * @public
          */
         onConfirmViewSettingsDialog: function (oEvent) {
-            
+
             this._applySortGroup(oEvent);
         },
 
@@ -162,7 +155,7 @@ sap.ui.define([
                 sPath,
                 bDescending,
                 aSorters = [];
-            
+
             sPath = mParams.sortItem.getKey();
             bDescending = mParams.sortDescending;
             aSorters.push(new Sorter(sPath, bDescending));
@@ -194,32 +187,38 @@ sap.ui.define([
             this._oList.removeSelections(true);
         },
 
-        /**
-         * Used to create GroupHeaders with non-capitalized caption.
-         * These headers are inserted into the list to
-         * group the list's items.
-         * @param {Object} oGroup group whose text is to be displayed
-         * @public
-         * @returns {sap.m.GroupHeaderListItem} group header with non-capitalized caption.
-         */
-        createGroupHeader: function (oGroup) {
-            return new GroupHeaderListItem({
-                title : oGroup.text,
-                upperCase : false
-            });
-        },
+        // /**
+        //  * Used to create GroupHeaders with non-capitalized caption.
+        //  * These headers are inserted into the list to
+        //  * group the list's items.
+        //  * @param {Object} oGroup group whose text is to be displayed
+        //  * @public
+        //  * @returns {sap.m.GroupHeaderListItem} group header with non-capitalized caption.
+        //  */
+        // createGroupHeader: function (oGroup) {
+        //     return new GroupHeaderListItem({
+        //         title : oGroup.text,
+        //         upperCase : false
+        //     });
+        // },
 
         /**
          * Event handler for navigating back.
          * We navigate back in the browser history
          * @public
          */
-        onNavBack: function() {
+        onNavBack: function () {
             // eslint-disable-next-line sap-no-history-manipulation
             history.go(-1);
         },
 
-        _onMasterMatched:  function() {
+
+
+        /* =========================================================== */
+        /* begin: internal methods                                     */
+        /* =========================================================== */
+
+        _onMasterMatched: function () {
             //Set the layout property of the FCL control to 'OneColumn'
             this.getModel("appView").setProperty("/layout", "OneColumn");
         },
@@ -234,16 +233,10 @@ sap.ui.define([
             var bReplace = !Device.system.phone;
             // set the layout property of FCL control to show two columns
             this.getModel("appView").setProperty("/layout", "TwoColumnsMidExpanded");
-            this.getOwnerComponent()._game = oItem.getBindingContext("json").getModel().getProperty(`${oItem.getBindingContextPath()}`);
             this.getRouter().navTo("object", {
-                // objectId : oItem.getBindingContext().getProperty("Id")
-                objectId : oItem.getBindingContext("json").getModel().getProperty(`${oItem.getBindingContextPath()}/Id`)
+                objectId : oItem.getBindingContext().getProperty("Id")
             }, bReplace);
         },
-
-        /* =========================================================== */
-        /* begin: internal methods                                     */
-        /* =========================================================== */
 
         /**
          * Binds the view to the object path and expands the aggregated line items.
@@ -255,7 +248,7 @@ sap.ui.define([
             // var sObjectId =  oEvent.getParameter("arguments").objectId;
             const sObjectId = oEvent.getParameter("arguments").objectId;
             this.getModel("appView").setProperty("/layout", "TwoColumnsMidExpanded");
-            
+
             this.getModel('json').setData(this.getOwnerComponent()._platform);
             if (!this.getOwnerComponent()._platform || !this.getOwnerComponent()._platform.PlatformKey || sObjectId !== this.getOwnerComponent()._platform.PlatformKey) {
                 this.getRouter().navTo('list', {}, true);
@@ -294,7 +287,7 @@ sap.ui.define([
          */
         _applyFilterSearch: function () {
             var aFilters = this._oListFilterState.aSearch.concat(this._oListFilterState.aFilter),
-                oViewModel = this.getModel("listView");
+                oViewModel = this.getModel("gameDetailView");
             this._oList.getBinding("items").filter(aFilters, "Application");
             // changes the noDataText of the list in case there are no filter results
             if (aFilters.length !== 0) {
@@ -310,8 +303,8 @@ sap.ui.define([
          * @param {string} sFilterBarText the selected filter value
          * @private
          */
-        _updateFilterBar : function (sFilterBarText) {
-            var oViewModel = this.getModel("listView");
+        _updateFilterBar: function (sFilterBarText) {
+            var oViewModel = this.getModel("gameDetailView");
             oViewModel.setProperty("/isFilterBarVisible", (this._oListFilterState.aFilter.length > 0));
             oViewModel.setProperty("/filterBarLabel", this.getResourceBundle().getText("listFilterBarText", [sFilterBarText]));
         }

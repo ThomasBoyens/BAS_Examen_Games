@@ -45,6 +45,11 @@
                             text="{detailView>/lineItemListTitle}"
                             titleStyle="H3"
                             level="H3"/>
+                            <Button
+                            id="sortButton"
+                            press=".onOpenViewSettings"
+                            icon="sap-icon://sort"
+                            type="Transparent"/>
                     </Toolbar>
                 </headerToolbar>
                 <columns>
@@ -73,11 +78,6 @@
             </Table>
         </semantic:content>
         <!--Semantic ShareMenu Buttons-->
-        <semantic:sendEmailAction>
-            <semantic:SendEmailAction
-                id="shareEmail"
-                press=".onSendEmailPress"/>
-        </semantic:sendEmailAction>
 
         <semantic:closeAction>
             <semantic:CloseAction
