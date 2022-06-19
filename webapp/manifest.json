@@ -108,13 +108,23 @@
             "list",
             "object"
           ]
+        },
+        {
+            "pattern": "GameSet/{objectId}/{gameObjectId}",
+          "name": "gameObject",
+          "target": [
+            "list",
+            "object",
+            "gameObject"
+          ]
         }
       ],
       "targets": {
         "list": {
           "viewName": "List",
           "viewLevel": 1,
-          "viewId": "list"
+          "viewId": "list",
+          "controlAggregation": "beginColumnPages"
         },
         "object": {
           "viewName": "Detail",
@@ -122,6 +132,12 @@
           "viewLevel": 1,
           "controlAggregation": "midColumnPages"
         },
+        "gameObject": {
+            "viewName": "GameDetail",
+            "viewId": "gameDetail",
+            "viewLevel": 1,
+            "controlAggregation": "endColumnPages"
+          },
         "detailObjectNotFound": {
           "viewName": "DetailObjectNotFound",
           "viewId": "detailObjectNotFound",
