@@ -4,16 +4,16 @@ sap.ui.define([
     "sap/ui/model/Filter",
     "sap/ui/model/Sorter",
     "sap/ui/model/FilterOperator",
-    "sap/m/GroupHeaderListItem",
     "sap/ui/Device",
     "sap/ui/core/Fragment",
     "../model/formatter",
     "sap/m/library"
-], function (BaseController, JSONModel, Filter, Sorter, FilterOperator, GroupHeaderListItem, Device, Fragment, formatter, mobileLibrary) {
+], function (BaseController, JSONModel, Filter, Sorter, FilterOperator, Device, Fragment, formatter, mobileLibrary) {
     "use strict";
 
     // shortcut for sap.m.URLHelper
     var URLHelper = mobileLibrary.URLHelper;
+    const platformId = null;
 
     return BaseController.extend("be.ap.edu.zsdgamelist.controller.Detail", {
 
@@ -69,6 +69,14 @@ sap.ui.define([
             }
         },
 
+        /**
+         * Event handler for the list search field. Applies current
+         * filter value and triggers a new search. If the search field's
+         * 'refresh' button has been pressed, no new search is triggered
+         * and the list binding is refresh instead.
+         * @param {sap.ui.base.Event} oEvent the search event
+         * @public
+         */
         onSearch: function (oEvent) {
             if (oEvent.getParameters().refreshButtonPressed) {
                 // Search field's 'refresh' button has been pressed.
@@ -187,21 +195,6 @@ sap.ui.define([
             this._oList.removeSelections(true);
         },
 
-        // /**
-        //  * Used to create GroupHeaders with non-capitalized caption.
-        //  * These headers are inserted into the list to
-        //  * group the list's items.
-        //  * @param {Object} oGroup group whose text is to be displayed
-        //  * @public
-        //  * @returns {sap.m.GroupHeaderListItem} group header with non-capitalized caption.
-        //  */
-        // createGroupHeader: function (oGroup) {
-        //     return new GroupHeaderListItem({
-        //         title : oGroup.text,
-        //         upperCase : false
-        //     });
-        // },
-
         /**
          * Event handler for navigating back.
          * We navigate back in the browser history
@@ -212,16 +205,9 @@ sap.ui.define([
             history.go(-1);
         },
 
-
-
         /* =========================================================== */
         /* begin: internal methods                                     */
         /* =========================================================== */
-
-        _onMasterMatched: function () {
-            //Set the layout property of the FCL control to 'OneColumn'
-            this.getModel("appView").setProperty("/layout", "OneColumn");
-        },
 
         /**
          * Shows the selected item on the detail page
@@ -232,9 +218,14 @@ sap.ui.define([
         _showGameDetail: function (oItem) {
             var bReplace = !Device.system.phone;
             // set the layout property of FCL control to show two columns
-            this.getModel("appView").setProperty("/layout", "TwoColumnsMidExpanded");
-            this.getRouter().navTo("object", {
-                objectId : oItem.getBindingContext().getProperty("Id")
+            this.getModel("appView").setProperty("/layout", "ThreeColumnsMidExpanded");
+            this.getOwnerComponent()._game = oItem.getBindingContext("json").getModel().getProperty(`${oItem.getBindingContextPath()}`);
+            console.log(this.platformId);
+            console.log(this.getOwnerComponent()._game);
+
+            this.getRouter().navTo("gameObject", {
+                objectId: this.platformId,
+                gameObjectId: oItem.getBindingContext("json").getModel().getProperty(`${oItem.getBindingContextPath()}/Id`)
             }, bReplace);
         },
 
@@ -248,21 +239,21 @@ sap.ui.define([
             // var sObjectId =  oEvent.getParameter("arguments").objectId;
             const sObjectId = oEvent.getParameter("arguments").objectId;
             this.getModel("appView").setProperty("/layout", "TwoColumnsMidExpanded");
+            this.platformId = sObjectId;
 
             this.getModel('json').setData(this.getOwnerComponent()._platform);
+            
             if (!this.getOwnerComponent()._platform || !this.getOwnerComponent()._platform.PlatformKey || sObjectId !== this.getOwnerComponent()._platform.PlatformKey) {
                 this.getRouter().navTo('list', {}, true);
             }
         },
 
         /**
-         * Set the full screen mode to false and navigate to list page
-         */
+        * Set the full screen mode to false and navigate to master page
+        */
         onCloseDetailPress: function () {
-            this.getModel("appView").setProperty("/actionButtonsInfo/midColumn/fullScreen", false);
-            // No item should be selected on list after detail page is closed
-            this.getOwnerComponent().oListSelector.clearListListSelection();
-            this.getRouter().navTo("list");
+            var oModel = this.getView().getModel("app");
+            this.getOwnerComponent().getRouter().navTo("list", {}, true);
         },
 
         /**

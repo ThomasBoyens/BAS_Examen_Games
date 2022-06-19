@@ -74,15 +74,6 @@ sap.ui.define([
             // update the list object counter after new data is loaded
             this._updateListItemCount(oEvent.getParameter("total"));
         },
-
-        /**
-         * Event handler for the list search field. Applies current
-         * filter value and triggers a new search. If the search field's
-         * 'refresh' button has been pressed, no new search is triggered
-         * and the list binding is refresh instead.
-         * @param {sap.ui.base.Event} oEvent the search event
-         * @public
-         */
         
 
         /**
@@ -242,7 +233,7 @@ sap.ui.define([
                 error: function(oError) {
                     console.error(oError);
                 }
-            })
+            });
         },
 
         /**
@@ -256,10 +247,13 @@ sap.ui.define([
             // set the layout property of FCL control to show two columns
             this.getModel("appView").setProperty("/layout", "TwoColumnsMidExpanded");
             this.getOwnerComponent()._platform = oItem.getBindingContext("json").getModel().getProperty(`${oItem.getBindingContextPath()}`);
+            console.log(this.getOwnerComponent()._platform);
+            
             this.getRouter().navTo("object", {
                 // objectId : oItem.getBindingContext().getProperty("Id")
                 objectId : oItem.getBindingContext("json").getModel().getProperty(`${oItem.getBindingContextPath()}/PlatformKey`)
             }, bReplace);
+            
         },
 
         /**
