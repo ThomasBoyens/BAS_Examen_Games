@@ -1,17 +1,18 @@
+/* eslint-disable no-console */
 sap.ui.define([
     "./BaseController",
-    'sap/ui/core/library',
     "sap/ui/model/json/JSONModel",
-    "../model/formatter",
-    "sap/m/library"
-], function (BaseController, coreLibrary, JSONModel, formatter, mobileLibrary) {
+    "sap/ui/model/Filter",
+    "sap/ui/model/Sorter",
+    "sap/ui/model/FilterOperator",
+    "sap/m/GroupHeaderListItem",
+    "sap/ui/Device",
+    "sap/ui/core/Fragment",
+    "../model/formatter"
+], function (BaseController, JSONModel, Filter, Sorter, FilterOperator, GroupHeaderListItem, Device, Fragment, formatter) {
     "use strict";
 
-    // shortcut for sap.m.URLHelper
-    var URLHelper = mobileLibrary.URLHelper;
-    var ValueState = coreLibrary.ValueState;
-
-    return BaseController.extend("be.ap.edu.zsdgamelist.controller.GameDetail", {
+    return BaseController.extend("be.ap.edu.zsdgamelist.controller.GameCreate", {
 
         formatter: formatter,
 
@@ -19,7 +20,11 @@ sap.ui.define([
         /* lifecycle methods                                           */
         /* =========================================================== */
 
-        onInit: function () {
+        /**
+         * Called when the list controller is instantiated. It sets up the event handling for the list/detail communication and other lifecycle tasks.
+         * @public
+         */
+        onInit : function () {
             // Model used to manipulate control states. The chosen values make sure,
             // detail page is busy indication immediately so there is no break in
             // between the busy indication for loading the view's meta data
@@ -30,11 +35,10 @@ sap.ui.define([
                 delay: 0
             });
 
-            this.getRouter().getRoute("gameObject").attachPatternMatched(this._onObjectMatched, this);
+            this.getRouter().getRoute("gameCreate");
 
-            this.setModel(oViewModel, "gameDetailView");
+            this.setModel(oViewModel, "gameCreateView");
 
-            // this.getOwnerComponent().getModel().metadataLoaded().then(this._onMetadataLoaded.bind(this));
             const oModel = new sap.ui.model.json.JSONModel();
             this.getView().setModel(oModel, 'json');
         },
@@ -43,15 +47,15 @@ sap.ui.define([
         /* event handlers                                              */
         /* =========================================================== */
 
-        onSave: function (oEvent){
-            const oGame = this.getOwnerComponent()._game;
-            console.log(oGame);
+        onSave: function (){
+
+            console.log();
             
-            this.getModel().update(`/GameSet(guid'${oGame.Id}')`, oGame,
-            {
-                succes: function (oFeedback) { console.log(oFeedback);},
-                error: function (oError) { console.error(oError);}
-                });
+            // this.getModel().create("/GameSet", oGame,
+            // {
+            //     succes: function (oFeedback) { console.log(oFeedback);},
+            //     error: function (oError) { console.error(oError);}
+            //     });
         },
 
         /**
@@ -82,35 +86,23 @@ sap.ui.define([
 			oTextArea.setValueState(sState);
 		},
 
+        onPressAddGame: function () {
+            this.getModel("appView").setProperty("/layout", "TwoColumnsMidExpanded");
+            
+            var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+			oRouter.navTo("gameCreate", {} );
+        },
 
         /* =========================================================== */
         /* begin: internal methods                                     */
         /* =========================================================== */
-
-
-        /**
-         * Binds the view to the object path and expands the aggregated line items.
-         * @function
-         * @param {sap.ui.base.Event} oEvent pattern match event in route 'object'
-         * @private
-         */
-        _onObjectMatched: function (oEvent) {
-            // var sObjectId =  oEvent.getParameter("arguments").objectId;
-            const sGameObjectId = oEvent.getParameter("arguments").gameObjectId;
-            this.getModel("appView").setProperty("/layout", "ThreeColumnsMidExpanded");
-            
-            this.getModel('json').setData(this.getOwnerComponent()._game);
-            if (!this.getOwnerComponent()._game || !this.getOwnerComponent()._game.Id || sGameObjectId !== this.getOwnerComponent()._game.Id) {
-                this.getRouter().navTo('list', {}, true);
-            }
-        },
 
         /**
         * Set the full screen mode to false and navigate to master page
         */
        onCloseDetailPress: function () {
         var oModel = this.getView().getModel("app");
-        this.getOwnerComponent().getRouter().navTo("object", { }, true);
+        this.getOwnerComponent().getRouter().navTo("list", { }, true);
     },
 
         /**
@@ -129,7 +121,6 @@ sap.ui.define([
             }
         }
 
-        
     });
 
 });

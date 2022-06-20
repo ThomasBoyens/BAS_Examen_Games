@@ -1,41 +1,29 @@
-<mvc:View
-    controllerName="be.ap.edu.zsdgamelist.controller.List"
+<mvc:View controllerName="be.ap.edu.zsdgamelist.controller.List"
     xmlns="sap.m"
     xmlns:semantic="sap.f.semantic"
     xmlns:mvc="sap.ui.core.mvc">
 
-    <semantic:SemanticPage
-        id="listPage"
-        preserveHeaderStateOnScroll="true"
-        toggleHeaderOnTitleClick="false">
+    <semantic:SemanticPage id="listPage" preserveHeaderStateOnScroll="true" toggleHeaderOnTitleClick="false">
         <semantic:titleHeading>
-            <Title
-                id="listPageTitle"
-                text="{listView>/title}"
-                level="H2"/>
+            <Title id="listPageTitle" text="{listView>/title}" level="H2"/>
         </semantic:titleHeading>
+        <semantic:headerContent>
+        <OverflowToolbar >
+            <ToolbarSpacer id="_IDGenToolbarSpacer1"/>
+            <Button text="Add game" press=".onPressAddGame">
+                <layoutData>
+				<OverflowToolbarLayoutData priority="NeverOverflow"/>
+			</layoutData>
+            </Button>
+            </OverflowToolbar>
+        </semantic:headerContent>
         <semantic:content>
             <!-- For client side filtering add this to the items attribute: parameters: {operationMode: 'Client'}}" -->
-            <List
-                id="list"
-                width="auto"
-                class="sapFDynamicPageAlignContent"
-                items="{
+            <List id="list" width="auto" class="sapFDynamicPageAlignContent" items="{
                     path: 'json>/platforms'
-                }"
-                busyIndicatorDelay="{listView>/delay}"
-                noDataText="{listView>/noDataText}"
-                mode="{= ${device>/system/phone} ? 'None' : 'SingleSelectMaster'}"
-                growing="true"
-                growingScrollToLoad="true"
-                updateFinished=".onUpdateFinished"
-                selectionChange=".onSelectionChange">
+                }" busyIndicatorDelay="{listView>/delay}" noDataText="{listView>/noDataText}" mode="{= ${device>/system/phone} ? 'None' : 'SingleSelectMaster'}" growing="true" growingScrollToLoad="true" updateFinished=".onUpdateFinished" selectionChange=".onSelectionChange">
                 <items>
-                    <ObjectListItem id="_IDGenObjectListItem1"
-                        type="Navigation"
-                        press=".onSelectionChange"
-                        title="{json>PlatformKey}"
-                         />
+                    <ObjectListItem id="_IDGenObjectListItem1" type="Navigation" press=".onSelectionChange" title="{json>PlatformKey}" />
                 </items>
             </List>
         </semantic:content>

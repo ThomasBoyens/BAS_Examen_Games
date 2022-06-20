@@ -164,6 +164,13 @@ sap.ui.define([
             }
         },
 
+        onPressAddGame: function () {
+            this.getModel("appView").setProperty("/layout", "TwoColumnsMidExpanded");
+            
+            var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
+			oRouter.navTo("gameCreate", {} );
+        },
+
         /**
          * Event handler for the bypassed event, which is fired when no routing pattern matched.
          * If there was an object selected in the list, that selection is removed.

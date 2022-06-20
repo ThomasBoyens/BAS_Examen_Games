@@ -1,31 +1,30 @@
-<mvc:View controllerName="be.ap.edu.zsdgamelist.controller.GameDetail"
+<mvc:View controllerName="be.ap.edu.zsdgamelist.controller.GameCreate"
     xmlns="sap.m"
     xmlns:semantic="sap.f.semantic"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns:f="sap.ui.layout.form">
 
-    <semantic:SemanticPage id="gameDetailPage" busy="{gameDetailView>/busy}" busyIndicatorDelay="{gameDetailView>/delay}" showFooter="true">
+    <semantic:SemanticPage id="gameCreatePage" busy="{gameCreateView>/busy}" busyIndicatorDelay="{gameCreateView>/delay}" showFooter="true">
         <semantic:titleHeading>
-            <Title id="_IDGenTitle1" text="{json>/Name}" type="H2"/>
+            <Title id="_IDGenTitle1" text="New Game" type="H2"/>
         </semantic:titleHeading>
         <semantic:headerContent>
-            <ObjectAttribute id="_IDGenObjectAttribute1" text = "{json>/Developer}" />
         </semantic:headerContent>
         <semantic:content>
             <f:SimpleForm id="SimpleFormDisplay354" editable="false" layout="ResponsiveGridLayout" title="Details" labelSpanXL="3" labelSpanL="3" labelSpanM="3" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1" singleContainerFullSize="false">
                 <f:content>
                     <Label id="_IDGenLabel1" text="Name" />
-                    <Input id="name" value="{json>/Name}" maxLength="40" />
+                    <Input id="name" value="" maxLength="40" />
                     <Label id="_IDGenLabel2" text="Developer" />
-                    <Input id="developer" value="{json>/Developer}" maxLength="40" />
+                    <Input id="developer" value="" maxLength="40" />
                     <Label id="_IDGenLabel3" text="Platform" />
-                    <Input id="platform" value="{json>/Platform}" maxLength="5" />
+                    <Input id="platform" value="" maxLength="5" />
                     <Label id="_IDGenLabel4" text="Genre" />
-                    <Input id="genre" value="{json>/Genre}" maxLength="10" />
-                    <Label id="_IDGenLabel5" text="Release date" />
-                    <DatePicker id="date" value="{json>/ReleaseDate}" />
+                    <Input id="genre" value="" maxLength="10" />
+                    <Label id="_IDGenLabel5" text="Date" />
+                    <DatePicker id="date" value="" />
                     <Label id="_IDGenLabel6" text="Description" />
-                    <TextArea id="description" value="{json>/Description}" showExceededText="true" maxLength="255" width="100%" valueState="{= ${/value}.length > 255 ? 'Warning' : 'Description too long' }" valueLiveUpdate="false" liveChange="handleLiveChange" />
+                    <TextArea id="description" value="" showExceededText="true" maxLength="255" width="100%" valueState="{= ${/value}.length > 255 ? 'Warning' : 'Description too long' }" valueLiveUpdate="false" liveChange="handleLiveChange" />
                 </f:content>
             </f:SimpleForm>
 
@@ -36,7 +35,7 @@
 		</semantic:positiveAction>
 
 		<semantic:negativeAction>
-			<semantic:NegativeAction id="_IDGenNegativeAction1" text="{i18n>cancel}" press=".onCancel" />
+			<semantic:NegativeAction id="_IDGenNegativeAction1" text="{i18n>cancel}" press="onCancel" />
 		</semantic:negativeAction>
         <!--Semantic ShareMenu Buttons-->
         <semantic:closeAction>

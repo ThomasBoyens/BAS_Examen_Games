@@ -1,159 +1,174 @@
 {
-  "_version": "1.40.0",
-  "sap.app": {
-    "id": "be.ap.edu.zsdgamelist",
-    "type": "application",
-    "i18n": "i18n/i18n.properties",
-    "applicationVersion": {
-      "version": "0.0.1"
-    },
-    "title": "{{appTitle}}",
-    "description": "{{appDescription}}",
-    "resources": "resources.json",
-    "sourceTemplate": {
-      "id": "@sap-ux/fiori-freestyle-writer:listdetail",
-      "version": "0.11.13",
-      "toolsId": "ace3c4ea-1d08-483d-882e-6f99d7eeb1d5"
-    },
-    "dataSources": {
-      "mainService": {
-        "uri": "/sap/opu/odata/sap/ZSD_041_GAMES_SRV/",
-        "type": "OData",
-        "settings": {
-          "annotations": [],
-          "localUri": "localService/metadata.xml",
-          "odataVersion": "2.0"
+    "_version": "1.40.0",
+    "sap.app": {
+        "id": "be.ap.edu.zsdgamelist",
+        "type": "application",
+        "i18n": "i18n/i18n.properties",
+        "applicationVersion": {
+            "version": "0.0.1"
+        },
+        "title": "{{appTitle}}",
+        "description": "{{appDescription}}",
+        "resources": "resources.json",
+        "sourceTemplate": {
+            "id": "@sap-ux/fiori-freestyle-writer:listdetail",
+            "version": "0.11.13",
+            "toolsId": "ace3c4ea-1d08-483d-882e-6f99d7eeb1d5"
+        },
+        "dataSources": {
+            "mainService": {
+                "uri": "/sap/opu/odata/sap/ZSD_041_GAMES_SRV/",
+                "type": "OData",
+                "settings": {
+                    "annotations": [],
+                    "localUri": "localService/metadata.xml",
+                    "odataVersion": "2.0"
+                }
+            }
         }
-      }
+    },
+    "sap.ui": {
+        "technology": "UI5",
+        "fullWidth": true,
+        "icons": {
+            "icon": "",
+            "favIcon": "",
+            "phone": "",
+            "phone@2": "",
+            "tablet": "",
+            "tablet@2": ""
+        },
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        }
+    },
+    "sap.ui5": {
+        "flexEnabled": true,
+        "dependencies": {
+            "minUI5Version": "1.101.0",
+            "libs": {
+                "sap.m": {},
+                "sap.ui.core": {},
+                "sap.f": {},
+                "sap.suite.ui.generic.template": {},
+                "sap.ui.comp": {},
+                "sap.ui.generic.app": {},
+                "sap.ui.table": {},
+                "sap.ushell": {}
+            }
+        },
+        "contentDensities": {
+            "compact": true,
+            "cozy": true
+        },
+        "models": {
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleName": "be.ap.edu.zsdgamelist.i18n.i18n"
+                }
+            },
+            "": {
+                "dataSource": "mainService",
+                "preload": true,
+                "settings": {
+                    "defaultBindingMode": "TwoWay",
+                    "defaultUpdateMethode": "PUT"
+                }
+            }
+        },
+        "resources": {
+            "css": []
+        },
+        "routing": {
+            "config": {
+                "routerClass": "sap.f.routing.Router",
+                "viewType": "XML",
+                "viewPath": "be.ap.edu.zsdgamelist.view",
+                "controlId": "layout",
+                "controlAggregation": "beginColumnPages",
+                "bypassed": {
+                    "target": [
+                        "notFound"
+                    ]
+                },
+                "async": true
+            },
+            "routes": [
+                {
+                    "pattern": "",
+                    "name": "list",
+                    "target": "list"
+                },
+                {
+                    "pattern": "GameSet/{objectId}",
+                    "name": "object",
+                    "target": [
+                        "list",
+                        "object"
+                    ]
+                },
+                {
+                    "pattern": "GameSet/{objectId}/{gameObjectId}",
+                    "name": "gameObject",
+                    "target": [
+                        "list",
+                        "object",
+                        "gameObject"
+                    ]
+                },
+                {
+                    "pattern": "gameCreateRoute",
+                    "name": "gameCreate",
+                    "target": [
+                        "list",
+                        "gameCreate"
+                    ]
+                }
+            ],
+            "targets": {
+                "list": {
+                    "viewName": "List",
+                    "viewLevel": 1,
+                    "viewId": "list",
+                    "controlAggregation": "beginColumnPages"
+                },
+                "object": {
+                    "viewName": "Detail",
+                    "viewId": "detail",
+                    "viewLevel": 1,
+                    "controlAggregation": "midColumnPages"
+                },
+                "gameObject": {
+                    "viewName": "GameDetail",
+                    "viewId": "gameDetail",
+                    "viewLevel": 1,
+                    "controlAggregation": "endColumnPages"
+                },
+                "gameCreate": {
+                    "viewName": "GameCreate",
+                    "viewId": "gameCreate",
+                    "viewLevel": 1,
+                    "controlAggregation": "midColumnPages"
+                },
+                "detailObjectNotFound": {
+                    "viewName": "DetailObjectNotFound",
+                    "viewId": "detailObjectNotFound",
+                    "controlAggregation": "midColumnPages"
+                },
+                "notFound": {
+                    "viewName": "NotFound",
+                    "viewId": "notFound"
+                }
+            }
+        },
+        "rootView": {
+            "viewName": "be.ap.edu.zsdgamelist.view.App",
+            "type": "XML",
+            "async": true,
+            "id": "app"
+        }
     }
-  },
-  "sap.ui": {
-    "technology": "UI5",
-    "icons": {
-      "icon": "",
-      "favIcon": "",
-      "phone": "",
-      "phone@2": "",
-      "tablet": "",
-      "tablet@2": ""
-    },
-    "deviceTypes": {
-      "desktop": true,
-      "tablet": true,
-      "phone": true
-    }
-  },
-  "sap.ui5": {
-    "flexEnabled": true,
-    "dependencies": {
-      "minUI5Version": "1.101.0",
-      "libs": {
-        "sap.m": {},
-        "sap.ui.core": {},
-        "sap.f": {},
-        "sap.suite.ui.generic.template": {},
-        "sap.ui.comp": {},
-        "sap.ui.generic.app": {},
-        "sap.ui.table": {},
-        "sap.ushell": {}
-      }
-    },
-    "contentDensities": {
-      "compact": true,
-      "cozy": true
-    },
-    "models": {
-      "i18n": {
-        "type": "sap.ui.model.resource.ResourceModel",
-        "settings": {
-          "bundleName": "be.ap.edu.zsdgamelist.i18n.i18n"
-        }
-      },
-      "": {
-        "dataSource": "mainService",
-        "preload": true,
-        "settings": {
-            "defaultBindingMode": "TwoWay",
-            "defaultUpdateMethode": "PUT"
-        }
-      }
-    },
-    "resources": {
-      "css": []
-    },
-    "routing": {
-      "config": {
-        "routerClass": "sap.f.routing.Router",
-        "viewType": "XML",
-        "viewPath": "be.ap.edu.zsdgamelist.view",
-        "controlId": "layout",
-        "controlAggregation": "beginColumnPages",
-        "bypassed": {
-          "target": [
-            "notFound"
-          ]
-        },
-        "async": true
-      },
-      "routes": [
-        {
-          "pattern": "",
-          "name": "list",
-          "target": "list"
-        },
-        {
-          "pattern": "GameSet/{objectId}",
-          "name": "object",
-          "target": [
-            "list",
-            "object"
-          ]
-        },
-        {
-            "pattern": "GameSet/{objectId}/{gameObjectId}",
-          "name": "gameObject",
-          "target": [
-            "list",
-            "object",
-            "gameObject"
-          ]
-        }
-      ],
-      "targets": {
-        "list": {
-          "viewName": "List",
-          "viewLevel": 1,
-          "viewId": "list",
-          "controlAggregation": "beginColumnPages"
-        },
-        "object": {
-          "viewName": "Detail",
-          "viewId": "detail",
-          "viewLevel": 1,
-          "controlAggregation": "midColumnPages"
-        },
-        "gameObject": {
-            "viewName": "GameDetail",
-            "viewId": "gameDetail",
-            "viewLevel": 1,
-            "controlAggregation": "endColumnPages"
-          },
-        "detailObjectNotFound": {
-          "viewName": "DetailObjectNotFound",
-          "viewId": "detailObjectNotFound",
-          "controlAggregation": "midColumnPages"
-        },
-        "notFound": {
-          "viewName": "NotFound",
-          "viewId": "notFound"
-        }
-      }
-    },
-    "rootView": {
-      "viewName": "be.ap.edu.zsdgamelist.view.App",
-      "type": "XML",
-      "async": true,
-      "id": "app"
-    }
-  }
 }

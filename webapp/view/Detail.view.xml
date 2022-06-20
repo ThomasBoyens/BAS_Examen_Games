@@ -19,7 +19,7 @@
                             showRefreshButton="true"
                             tooltip="{i18n>listSearchTooltip}"
                             search=".onSearch"
-                            width="auto">
+                            width="50%">
                             <layoutData>
                                 <OverflowToolbarLayoutData id="_IDGenOverflowToolbarLayoutData1"
                                     minWidth="150px"
