@@ -2,42 +2,62 @@
     xmlns="sap.m"
     xmlns:semantic="sap.f.semantic"
     xmlns:mvc="sap.ui.core.mvc"
-    xmlns:f="sap.ui.layout.form">
+    xmlns:f="sap.ui.layout.form"
+    xmlns:core="sap.ui.core">
 
     <semantic:SemanticPage id="gameDetailPage" busy="{gameDetailView>/busy}" busyIndicatorDelay="{gameDetailView>/delay}" showFooter="true">
         <semantic:titleHeading>
             <Title id="_IDGenTitle1" text="{json>/Name}" type="H2"/>
         </semantic:titleHeading>
         <semantic:headerContent>
-            <ObjectAttribute id="_IDGenObjectAttribute1" text = "{json>/Developer}" />
+            <Toolbar id="_IDGenToolbar1" >
+                <ObjectAttribute id="_IDGenObjectAttribute1" text = "{json>/Developer}" />
+                <ToolbarSpacer id="_IDGenToolbarSpacer"/>
+                <Button id="_IDGenButton1" text="Delete" icon="sap-icon://delete" press=".onDelete" />
+            </Toolbar>
         </semantic:headerContent>
         <semantic:content>
-            <f:SimpleForm id="SimpleFormDisplay354" editable="false" layout="ResponsiveGridLayout" title="Details" labelSpanXL="3" labelSpanL="3" labelSpanM="3" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1" singleContainerFullSize="false">
+            <f:SimpleForm id="SimpleFormDisplay354-2" editable="false" layout="ResponsiveGridLayout" title="Details" labelSpanXL="3" labelSpanL="3" labelSpanM="3" labelSpanS="12" adjustLabelSpan="false" emptySpanXL="4" emptySpanL="4" emptySpanM="4" emptySpanS="0" columnsXL="1" columnsL="1" columnsM="1" singleContainerFullSize="false">
                 <f:content>
-                    <Label id="_IDGenLabel1" text="Name" />
+                    <ToolbarSpacer id="_IDGenToolbarSpacer1"/>
+                    <Label id="_IDGenLabel7" text="Name" />
                     <Input id="name" value="{json>/Name}" maxLength="40" />
-                    <Label id="_IDGenLabel2" text="Developer" />
+                    <Label id="_IDGenLabel8" text="Developer" />
                     <Input id="developer" value="{json>/Developer}" maxLength="40" />
-                    <Label id="_IDGenLabel3" text="Platform" />
-                    <Input id="platform" value="{json>/Platform}" maxLength="5" />
-                    <Label id="_IDGenLabel4" text="Genre" />
-                    <Input id="genre" value="{json>/Genre}" maxLength="10" />
-                    <Label id="_IDGenLabel5" text="Release date" />
-                    <DatePicker id="date" value="{json>/ReleaseDate}" />
-                    <Label id="_IDGenLabel6" text="Description" />
-                    <TextArea id="description" value="{json>/Description}" showExceededText="true" maxLength="255" width="100%" valueState="{= ${/value}.length > 255 ? 'Warning' : 'Description too long' }" valueLiveUpdate="false" liveChange="handleLiveChange" />
+                    <Label id="_IDGenLabel9" text="Platform" />
+                    <Select id="platform" selectedKey="{json>/Platform}">
+                        <core:ListItem id="_IDGenItem1" key="CON" text="Console" />
+                        <core:ListItem id="_IDGenItem2" key="MOB" text="Mobile" />
+                        <core:ListItem id="_IDGenItem3" key="PC" text="PC" />
+                    </Select>
+                    <Label id="_IDGenLabel10" text="Genre" />
+                    <Select id="genre" selectedKey="{json>/Genre}">
+                        <core:ListItem id="_IDGenListItem1" key="RPG" text="Role Playing Games (RPG)" />
+                        <core:ListItem id="_IDGenListItem2" key="MMORPG" text="Massively Multiplayer Online Role Playing Games (MMORPG)" />
+                        <core:ListItem id="_IDGenListItem3" key="RTS" text="Real-time Strategy Games (RTS)" />
+                        <core:ListItem id="_IDGenListItem4" key="MOBA" text="Multiplayer Online Battle Arena (MOBA)" />
+                        <core:ListItem id="_IDGenListItem5" key="FPS" text="First Person Shooters (FPS)" />
+                        <core:ListItem id="_IDGenListItem6" key="Adventure" text="Adventure Games" />
+                        <core:ListItem id="_IDGenListItem7" key="Sport" text="Sport Games" />
+                        <core:ListItem id="_IDGenListItem8" key="SIM" text="Simulation games" />
+                        <core:ListItem id="_IDGenListItem9" key="Puzzle" text="Puzzle games" />
+                    </Select>
+                    <Label id="_IDGenLabel11" text="Release date" />
+                    <DatePicker id="date" valueFormat="yyyyMMdd" value="{json>/ReleaseDate}" />
+                    <Label id="_IDGenLabel12" text="Description" />
+                    <TextArea id="description" value="{json>/Description}" showExceededText="true" maxLength="255" width="100%" valueState="{= ${/value}.length > 255 ? 'Warning' : 'None' }" valueLiveUpdate="false" liveChange="handleLiveChange" />
                 </f:content>
             </f:SimpleForm>
 
         </semantic:content>
         <!-- Semantic Footer Buttons -->
         <semantic:positiveAction>
-			<semantic:PositiveAction id="_IDGenPositiveAction1" text="{i18n>save}" press=".onSave" />
-		</semantic:positiveAction>
+            <semantic:PositiveAction id="_IDGenPositiveAction1" text="{i18n>save}" press=".onSave" />
+        </semantic:positiveAction>
 
-		<semantic:negativeAction>
-			<semantic:NegativeAction id="_IDGenNegativeAction1" text="{i18n>cancel}" press=".onCancel" />
-		</semantic:negativeAction>
+        <semantic:negativeAction>
+            <semantic:NegativeAction id="_IDGenNegativeAction1" text="{i18n>cancel}" press=".onCancel" />
+        </semantic:negativeAction>
         <!--Semantic ShareMenu Buttons-->
         <semantic:closeAction>
             <semantic:CloseAction id="closeColumn" press=".onCloseDetailPress"/>

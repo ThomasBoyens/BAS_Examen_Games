@@ -23,7 +23,9 @@
                     path: 'json>/platforms'
                 }" busyIndicatorDelay="{listView>/delay}" noDataText="{listView>/noDataText}" mode="{= ${device>/system/phone} ? 'None' : 'SingleSelectMaster'}" growing="true" growingScrollToLoad="true" updateFinished=".onUpdateFinished" selectionChange=".onSelectionChange">
                 <items>
-                    <ObjectListItem id="_IDGenObjectListItem1" type="Navigation" press=".onSelectionChange" title="{json>PlatformKey}" />
+                    <ObjectListItem id="_IDGenObjectListItem1" type="Navigation" press=".onSelectionChange" title="{json>PlatformKey}" >
+                    <ObjectAttribute text="{json>Name}" />
+                    </ObjectListItem>
                 </items>
             </List>
         </semantic:content>

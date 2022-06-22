@@ -2,14 +2,15 @@ sap.ui.define([
     "./BaseController",
     'sap/ui/core/library',
     "sap/ui/model/json/JSONModel",
+    "sap/ui/Device",
     "../model/formatter",
     "sap/m/library"
-], function (BaseController, coreLibrary, JSONModel, formatter, mobileLibrary) {
+], function (BaseController, coreLibrary, JSONModel, formatter, Device, mobileLibrary) {
     "use strict";
 
     // shortcut for sap.m.URLHelper
     var URLHelper = mobileLibrary.URLHelper;
-    var ValueState = coreLibrary.ValueState;
+    const ValueState = coreLibrary.ValueState;
 
     return BaseController.extend("be.ap.edu.zsdgamelist.controller.GameDetail", {
 
@@ -44,14 +45,34 @@ sap.ui.define([
         /* =========================================================== */
 
         onSave: function (oEvent){
+            const currentDate = new Date();
+            const modifiedDate = currentDate.getFullYear()+ ("0"+(currentDate.getMonth()+1)).slice(-2) + ("0" + currentDate.getDate()).slice(-2);
+
             const oGame = this.getOwnerComponent()._game;
-            console.log(oGame);
+
+            oGame.ModifiedOn = modifiedDate;
             
             this.getModel().update(`/GameSet(guid'${oGame.Id}')`, oGame,
             {
                 succes: function (oFeedback) { console.log(oFeedback);},
                 error: function (oError) { console.error(oError);}
                 });
+        },
+
+        onCancel: function () {
+            this.onCloseDetailPress();
+        },
+
+        onDelete: function () {
+            const oGame = this.getOwnerComponent()._game;
+
+            oGame.Deleted = true;
+            this.getModel().update(`/GameSet(guid'${oGame.Id}')`, oGame,
+            {
+                succes: function (oFeedback) { console.log(oFeedback);},
+                error: function (oError) { console.error(oError);}
+                });
+                window.location.reload();
         },
 
         /**
@@ -98,6 +119,8 @@ sap.ui.define([
             // var sObjectId =  oEvent.getParameter("arguments").objectId;
             const sGameObjectId = oEvent.getParameter("arguments").gameObjectId;
             this.getModel("appView").setProperty("/layout", "ThreeColumnsMidExpanded");
+            this.currentDetail = this.getOwnerComponent()._game;
+            
             
             this.getModel('json').setData(this.getOwnerComponent()._game);
             if (!this.getOwnerComponent()._game || !this.getOwnerComponent()._game.Id || sGameObjectId !== this.getOwnerComponent()._game.Id) {
@@ -106,11 +129,13 @@ sap.ui.define([
         },
 
         /**
-        * Set the full screen mode to false and navigate to master page
+        * Set the full screen mode to false and navigate to previous page
         */
        onCloseDetailPress: function () {
-        var oModel = this.getView().getModel("app");
-        this.getOwnerComponent().getRouter().navTo("object", { }, true);
+        const platformId = this.getOwnerComponent()._game.Platform;
+        this.getOwnerComponent().getRouter().navTo("object", {
+            objectId : platformId
+         }, true);
     },
 
         /**

@@ -13,7 +13,7 @@ sap.ui.define([
 
     // shortcut for sap.m.URLHelper
     var URLHelper = mobileLibrary.URLHelper;
-    const platformId = null;
+    
 
     return BaseController.extend("be.ap.edu.zsdgamelist.controller.Detail", {
 
@@ -78,23 +78,18 @@ sap.ui.define([
          * @public
          */
         onSearch: function (oEvent) {
-            if (oEvent.getParameters().refreshButtonPressed) {
-                // Search field's 'refresh' button has been pressed.
-                // This is visible if you select any list item.
-                // In this case no new search is triggered, we only
-                // refresh the list binding.
-                this.onRefresh();
-                return;
-            }
+            // add filter for search
+        var aFilters = [];
+        var sQuery = oEvent.getParameter("newValue");
+        if (sQuery && sQuery.length > 0) {
+            var nameFilter = new Filter("Name", sap.ui.model.FilterOperator.Contains, sQuery);
+            aFilters.push(nameFilter);
+        }
 
-            var sQuery = oEvent.getParameter("query");
-
-            if (sQuery) {
-                this._oListFilterState.aSearch = [new Filter("Name", FilterOperator.Contains, sQuery)];
-            } else {
-                this._oListFilterState.aSearch = [];
-            }
-            this._applyFilterSearch();
+        // update list binding
+        var list = this.getView().byId("lineItemsList");
+        var binding = list.getBinding("items");
+        binding.filter(aFilters, "Application");
 
         },
 
@@ -105,69 +100,6 @@ sap.ui.define([
          */
         onRefresh: function () {
             this._oList.getBinding("items").refresh();
-        },
-
-        /**
-         * Event handler for the filter, sort and group buttons to open the ViewSettingsDialog.
-         * @param {sap.ui.base.Event} oEvent the button press event
-         * @public
-         */
-        onOpenViewSettings: function (oEvent) {
-            var sDialogTab = "filter";
-            if (oEvent.getSource() instanceof sap.m.Button) {
-                var sButtonId = oEvent.getSource().getId();
-                if (sButtonId.match("sort")) {
-                    sDialogTab = "sort";
-                } else if (sButtonId.match("group")) {
-                    sDialogTab = "group";
-                }
-            }
-            // load asynchronous XML fragment
-            if (!this.byId("viewSettingsDialog")) {
-                Fragment.load({
-                    id: this.getView().getId(),
-                    name: "be.ap.edu.zsdgamelist.view.ViewSettingsDialog",
-                    controller: this
-                }).then(function (oDialog) {
-                    // connect dialog to the root view of this component (models, lifecycle)
-                    this.getView().addDependent(oDialog);
-                    oDialog.addStyleClass(this.getOwnerComponent().getContentDensityClass());
-                    oDialog.open(sDialogTab);
-                }.bind(this));
-            } else {
-                this.byId("viewSettingsDialog").open(sDialogTab);
-            }
-        },
-
-        /**
-         * Event handler called when ViewSettingsDialog has been confirmed, i.e.
-         * has been closed with 'OK'. In the case, the currently chosen filters, sorters or groupers
-         * are applied to the list, which can also mean that they
-         * are removed from the list, in case they are
-         * removed in the ViewSettingsDialog.
-         * @param {sap.ui.base.Event} oEvent the confirm event
-         * @public
-         */
-        onConfirmViewSettingsDialog: function (oEvent) {
-
-            this._applySortGroup(oEvent);
-        },
-
-        /**
-         * Apply the chosen sorter and grouper to the list
-         * @param {sap.ui.base.Event} oEvent the confirm event
-         * @private
-         */
-        _applySortGroup: function (oEvent) {
-            var mParams = oEvent.getParameters(),
-                sPath,
-                bDescending,
-                aSorters = [];
-
-            sPath = mParams.sortItem.getKey();
-            bDescending = mParams.sortDescending;
-            aSorters.push(new Sorter(sPath, bDescending));
-            this._oList.getBinding("items").sort(aSorters);
         },
 
         /**
@@ -184,6 +116,23 @@ sap.ui.define([
                 // get the list item, either from the listItem parameter or from the event's source itself (will depend on the device-dependent mode).
                 this._showGameDetail(oEvent.getParameter("listItem") || oEvent.getSource());
             }
+        },
+
+        onSelectionFilter: function (oEvent) {
+
+            // add filter for search
+            var aFilters = [];
+            var sQuery = this.getView().byId("genre").getSelectedKey();
+            
+            if (sQuery && sQuery.length > 0) {
+                var genreFilter = new Filter("Genre", sap.ui.model.FilterOperator.Contains, sQuery);
+                aFilters.push(genreFilter);
+            }
+
+            // update list binding
+            var list = this.getView().byId("lineItemsList");
+            var binding = list.getBinding("items");
+            binding.filter(aFilters, "Application");
         },
 
         /**
@@ -220,8 +169,6 @@ sap.ui.define([
             // set the layout property of FCL control to show two columns
             this.getModel("appView").setProperty("/layout", "ThreeColumnsMidExpanded");
             this.getOwnerComponent()._game = oItem.getBindingContext("json").getModel().getProperty(`${oItem.getBindingContextPath()}`);
-            console.log(this.platformId);
-            console.log(this.getOwnerComponent()._game);
 
             this.getRouter().navTo("gameObject", {
                 objectId: this.platformId,
@@ -242,7 +189,7 @@ sap.ui.define([
             this.platformId = sObjectId;
 
             this.getModel('json').setData(this.getOwnerComponent()._platform);
-            
+
             if (!this.getOwnerComponent()._platform || !this.getOwnerComponent()._platform.PlatformKey || sObjectId !== this.getOwnerComponent()._platform.PlatformKey) {
                 this.getRouter().navTo('list', {}, true);
             }
@@ -270,35 +217,8 @@ sap.ui.define([
                 // reset to previous layout
                 this.getModel("appView").setProperty("/layout", this.getModel("appView").getProperty("/previousLayout"));
             }
-        },
-
-        /**
-         * Internal helper method to apply both filter and search state together on the list binding
-         * @private
-         */
-        _applyFilterSearch: function () {
-            var aFilters = this._oListFilterState.aSearch.concat(this._oListFilterState.aFilter),
-                oViewModel = this.getModel("gameDetailView");
-            this._oList.getBinding("items").filter(aFilters, "Application");
-            // changes the noDataText of the list in case there are no filter results
-            if (aFilters.length !== 0) {
-                oViewModel.setProperty("/noDataText", this.getResourceBundle().getText("listListNoDataWithFilterOrSearchText"));
-            } else if (this._oListFilterState.aSearch.length > 0) {
-                // only reset the no data text to default when no new search was triggered
-                oViewModel.setProperty("/noDataText", this.getResourceBundle().getText("listListNoDataText"));
-            }
-        },
-
-        /**
-         * Internal helper method that sets the filter bar visibility property and the label's caption to be shown
-         * @param {string} sFilterBarText the selected filter value
-         * @private
-         */
-        _updateFilterBar: function (sFilterBarText) {
-            var oViewModel = this.getModel("gameDetailView");
-            oViewModel.setProperty("/isFilterBarVisible", (this._oListFilterState.aFilter.length > 0));
-            oViewModel.setProperty("/filterBarLabel", this.getResourceBundle().getText("listFilterBarText", [sFilterBarText]));
         }
+
     });
 
 });

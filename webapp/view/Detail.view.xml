@@ -1,103 +1,73 @@
-<mvc:View
-    controllerName="be.ap.edu.zsdgamelist.controller.Detail"
+<mvc:View controllerName="be.ap.edu.zsdgamelist.controller.Detail"
     xmlns="sap.m"
     xmlns:semantic="sap.f.semantic"
-    xmlns:mvc="sap.ui.core.mvc">
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core">
 
-    <semantic:SemanticPage
-        id="detailPage"
-        busy="{detailView>/busy}"
-        busyIndicatorDelay="{detailView>/delay}">
+    <semantic:SemanticPage id="detailPage" busy="{detailView>/busy}" busyIndicatorDelay="{detailView>/delay}">
         <semantic:titleHeading>
-            <Title id="_IDGenTitle1"
-                text="{json>/PlatformKey}"
-                level="H2"/>
+            <Title id="_IDGenTitle1" text="{json>/Name}" level="H2"/>
         </semantic:titleHeading>
         <semantic:headerContent>
-                        <SearchField
-                            id="searchField"
-                            showRefreshButton="true"
-                            tooltip="{i18n>listSearchTooltip}"
-                            search=".onSearch"
-                            width="50%">
-                            <layoutData>
-                                <OverflowToolbarLayoutData id="_IDGenOverflowToolbarLayoutData1"
-                                    minWidth="150px"
-                                    maxWidth="240px"
-                                    shrinkable="true"
-                                    priority="NeverOverflow"/>
-                            </layoutData>
-                        </SearchField>
-                        <ToolbarSpacer id="_IDGenToolbarSpacer1"/>
-        </semantic:headerContent>
-        <semantic:content>
-        <Table
-                id="lineItemsList"
-                width="auto"
-                items="{json>/toGames/results}"
-                updateFinished=".onListUpdateFinished"
-                noDataText="{i18n>detailLineItemTableNoDataText}"
-                busyIndicatorDelay="{detailView>/lineItemTableDelay}">
-                <headerToolbar>
-                    <Toolbar id="_IDGenToolbar1">
-                        <Title
-                            id="lineItemsTitle"
-                            text="{detailView>/lineItemListTitle}"
-                            titleStyle="H3"
-                            level="H3"/>
-                            <Button
-                            id="sortButton"
-                            press=".onOpenViewSettings"
-                            icon="sap-icon://sort"
-                            type="Transparent"/>
+        <Toolbar id="_IDGenToolbar2">
+            <SearchField id="searchField" showRefreshButton="true" tooltip="{i18n>listSearchTooltip}" liveChange=".onSearch" width="50%">
+                <layoutData>
+                    <OverflowToolbarLayoutData id="_IDGenOverflowToolbarLayoutData1" minWidth="150px" maxWidth="240px" shrinkable="true" priority="NeverOverflow"/>
+                </layoutData>
+            </SearchField>
+            <ToolbarSpacer id="_IDGenToolbarSpacer1"/>
+            <ComboBox id="genre" change=".onSelectionFilter">
+                        <core:ListItem id="_IDGenListItem" key="" text="All genres" />
+                        <core:ListItem id="_IDGenListItem1" key="RPG" text="Role Playing Games (RPG)" />
+                        <core:ListItem id="_IDGenListItem2" key="MMORPG" text="Massively Multiplayer Online Role Playing Games (MMORPG)" />
+                        <core:ListItem id="_IDGenListItem3" key="RTS" text="Real-time Strategy Games (RTS)" />
+                        <core:ListItem id="_IDGenListItem4" key="MOBA" text="Multiplayer Online Battle Arena (MOBA)" />
+                        <core:ListItem id="_IDGenListItem5" key="FPS" text="First Person Shooters (FPS)" />
+                        <core:ListItem id="_IDGenListItem6" key="Adventure" text="Adventure Games" />
+                        <core:ListItem id="_IDGenListItem7" key="Sport" text="Sport Games" />
+                        <core:ListItem id="_IDGenListItem8" key="SIM" text="Simulation games" />
+                        <core:ListItem id="_IDGenListItem9" key="Puzzle" text="Puzzle games" />
+                    </ComboBox>
                     </Toolbar>
-                </headerToolbar>
-                <columns>
-                    <Column id="_IDGenColumn1">
-                        <Text id="_IDGenText1" text="{i18n>detailLineItemTableIDColumn}"/>
-                    </Column>
-                    <Column id="_IDGenColumn2"
-                        minScreenWidth="Tablet"
-                        demandPopin="true"
-                        hAlign="End">
-                        <Text id="_IDGenText2" text="{i18n>detailLineItemTableUnitNumberColumn}"/>
-                    </Column>
-                </columns>
-                <items>
-                    <ColumnListItem id="_IDGenColumnListItem1"
-                        type="Navigation"
-                        press=".onSelectionChange">
-                        <cells>
-                            <ObjectIdentifier id="_IDGenObjectIdentifier1"
-                                title="{json>Name}"
-                                text="{json>Developer}"/>
-                            <ObjectNumber id="_IDGenObjectNumber2" />
-                        </cells>
-                    </ColumnListItem>
-                </items>
-            </Table>
-        </semantic:content>
-        <!--Semantic ShareMenu Buttons-->
+    </semantic:headerContent>
+    <semantic:content>
+        <Table id="lineItemsList" width="auto" items="{json>/toGames/results}" updateFinished=".onListUpdateFinished" noDataText="{i18n>detailLineItemTableNoDataText}" busyIndicatorDelay="{detailView>/lineItemTableDelay}">
+            <headerToolbar>
+                <Toolbar id="_IDGenToolbar1">
+                    <Title id="lineItemsTitle" text="{detailView>/lineItemListTitle}" titleStyle="H3" level="H3"/>
+                </Toolbar>
+            </headerToolbar>
+            <columns>
+                <Column id="_IDGenColumn1">
+                    <Text id="_IDGenText1" text="{i18n>detailLineItemTableIDColumn}"/>
+                </Column>
+                <Column id="_IDGenColumn2" minScreenWidth="Tablet" demandPopin="true" hAlign="End">
+                    <Text id="_IDGenText2" text="{i18n>detailLineItemTableUnitNumberColumn}"/>
+                </Column>
+            </columns>
+            <items>
+                <ColumnListItem id="_IDGenColumnListItem1" type="Navigation" press=".onSelectionChange">
+                    <cells>
+                        <ObjectIdentifier id="_IDGenObjectIdentifier1" title="{json>Name}" text="{json>Developer}"/>
+                        <ObjectNumber id="_IDGenObjectNumber2" />
+                    </cells>
+                </ColumnListItem>
+            </items>
+        </Table>
+    </semantic:content>
+    <!--Semantic ShareMenu Buttons-->
 
-        <semantic:closeAction>
-            <semantic:CloseAction
-                    id="closeColumn"
-                    press=".onCloseDetailPress"/>
-        </semantic:closeAction>
+    <semantic:closeAction>
+        <semantic:CloseAction id="closeColumn" press=".onCloseDetailPress"/>
+    </semantic:closeAction>
 
-        <semantic:fullScreenAction>
-            <semantic:FullScreenAction
-                    id="enterFullScreen"
-                    visible="{= !${device>/system/phone} &amp;&amp; !${appView>/actionButtonsInfo/midColumn/fullScreen}}"
-                    press=".toggleFullScreen"/>
-        </semantic:fullScreenAction>
-        <semantic:exitFullScreenAction>
-            <semantic:ExitFullScreenAction
-                    id="exitFullScreen"
-                    visible="{= !${device>/system/phone} &amp;&amp; ${appView>/actionButtonsInfo/midColumn/fullScreen}}"
-                    press=".toggleFullScreen"/>
-        </semantic:exitFullScreenAction>
+    <semantic:fullScreenAction>
+        <semantic:FullScreenAction id="enterFullScreen" visible="{= !${device>/system/phone} &amp;&amp; !${appView>/actionButtonsInfo/midColumn/fullScreen}}" press=".toggleFullScreen"/>
+    </semantic:fullScreenAction>
+    <semantic:exitFullScreenAction>
+        <semantic:ExitFullScreenAction id="exitFullScreen" visible="{= !${device>/system/phone} &amp;&amp; ${appView>/actionButtonsInfo/midColumn/fullScreen}}" press=".toggleFullScreen"/>
+    </semantic:exitFullScreenAction>
 
-    </semantic:SemanticPage>
+</semantic:SemanticPage>
 
 </mvc:View>

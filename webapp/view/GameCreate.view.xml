@@ -2,7 +2,8 @@
     xmlns="sap.m"
     xmlns:semantic="sap.f.semantic"
     xmlns:mvc="sap.ui.core.mvc"
-    xmlns:f="sap.ui.layout.form">
+    xmlns:f="sap.ui.layout.form"
+    xmlns:core="sap.ui.core">
 
     <semantic:SemanticPage id="gameCreatePage" busy="{gameCreateView>/busy}" busyIndicatorDelay="{gameCreateView>/delay}" showFooter="true">
         <semantic:titleHeading>
@@ -18,25 +19,39 @@
                     <Label id="_IDGenLabel2" text="Developer" />
                     <Input id="developer" value="" maxLength="40" />
                     <Label id="_IDGenLabel3" text="Platform" />
-                    <Input id="platform" value="" maxLength="5" />
+                    <Select id="platform">
+                        <core:ListItem id="_IDGenItem1" key="CON" text="Console" />
+                        <core:ListItem id="_IDGenItem2" key="MOB" text="Mobile" />
+                        <core:ListItem id="_IDGenItem3" key="PC" text="PC" />
+                    </Select>
                     <Label id="_IDGenLabel4" text="Genre" />
-                    <Input id="genre" value="" maxLength="10" />
+                    <Select id="genre">
+                        <core:ListItem id="_IDGenListItem1" key="RPG" text="Role Playing Games (RPG)" />
+                        <core:ListItem id="_IDGenListItem2" key="MMORPG" text="Massively Multiplayer Online Role Playing Games (MMORPG)" />
+                        <core:ListItem id="_IDGenListItem3" key="RTS" text="Real-time Strategy Games (RTS)" />
+                        <core:ListItem id="_IDGenListItem4" key="MOBA" text="Multiplayer Online Battle Arena (MOBA)" />
+                        <core:ListItem id="_IDGenListItem5" key="FPS" text="First Person Shooters (FPS)" />
+                        <core:ListItem id="_IDGenListItem6" key="Adventure" text="Adventure Games" />
+                        <core:ListItem id="_IDGenListItem7" key="Sport" text="Sport Games" />
+                        <core:ListItem id="_IDGenListItem8" key="SIM" text="Simulation games" />
+                        <core:ListItem id="_IDGenListItem9" key="Puzzle" text="Puzzle games" />
+                    </Select>
                     <Label id="_IDGenLabel5" text="Date" />
-                    <DatePicker id="date" value="" />
+                    <DatePicker id="date" valueFormat="yyyyMMdd" value="" />
                     <Label id="_IDGenLabel6" text="Description" />
-                    <TextArea id="description" value="" showExceededText="true" maxLength="255" width="100%" valueState="{= ${/value}.length > 255 ? 'Warning' : 'Description too long' }" valueLiveUpdate="false" liveChange="handleLiveChange" />
+                    <TextArea id="description" value="" showExceededText="true" maxLength="255" width="100%" valueState="{= ${/value}.length > 255 ? 'Warning' : 'None' }" valueLiveUpdate="false"  />
                 </f:content>
             </f:SimpleForm>
 
         </semantic:content>
         <!-- Semantic Footer Buttons -->
         <semantic:positiveAction>
-			<semantic:PositiveAction id="_IDGenPositiveAction1" text="{i18n>save}" press=".onSave" />
-		</semantic:positiveAction>
+            <semantic:PositiveAction id="_IDGenPositiveAction1" text="{i18n>save}" press=".onSave" />
+        </semantic:positiveAction>
 
-		<semantic:negativeAction>
-			<semantic:NegativeAction id="_IDGenNegativeAction1" text="{i18n>cancel}" press="onCancel" />
-		</semantic:negativeAction>
+        <semantic:negativeAction>
+            <semantic:NegativeAction id="_IDGenNegativeAction1" text="{i18n>cancel}" press=".onCancel" />
+        </semantic:negativeAction>
         <!--Semantic ShareMenu Buttons-->
         <semantic:closeAction>
             <semantic:CloseAction id="closeColumn" press=".onCloseDetailPress"/>

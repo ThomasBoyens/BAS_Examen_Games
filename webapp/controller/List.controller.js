@@ -86,69 +86,6 @@ sap.ui.define([
         },
 
         /**
-         * Event handler for the filter, sort and group buttons to open the ViewSettingsDialog.
-         * @param {sap.ui.base.Event} oEvent the button press event
-         * @public
-         */
-        onOpenViewSettings: function (oEvent) {
-            var sDialogTab = "filter";
-            if (oEvent.getSource() instanceof sap.m.Button) {
-                var sButtonId = oEvent.getSource().getId();
-                if (sButtonId.match("sort")) {
-                    sDialogTab = "sort";
-                } else if (sButtonId.match("group")) {
-                    sDialogTab = "group";
-                }
-            }
-            // load asynchronous XML fragment
-            if (!this.byId("viewSettingsDialog")) {
-                Fragment.load({
-                    id: this.getView().getId(),
-                    name: "be.ap.edu.zsdgamelist.view.ViewSettingsDialog",
-                    controller: this
-                }).then(function(oDialog){
-                    // connect dialog to the root view of this component (models, lifecycle)
-                    this.getView().addDependent(oDialog);
-                    oDialog.addStyleClass(this.getOwnerComponent().getContentDensityClass());
-                    oDialog.open(sDialogTab);
-                }.bind(this));
-            } else {
-                this.byId("viewSettingsDialog").open(sDialogTab);
-            }
-        },
-
-        /**
-         * Event handler called when ViewSettingsDialog has been confirmed, i.e.
-         * has been closed with 'OK'. In the case, the currently chosen filters, sorters or groupers
-         * are applied to the list, which can also mean that they
-         * are removed from the list, in case they are
-         * removed in the ViewSettingsDialog.
-         * @param {sap.ui.base.Event} oEvent the confirm event
-         * @public
-         */
-        onConfirmViewSettingsDialog: function (oEvent) {
-            
-            this._applySortGroup(oEvent);
-        },
-
-        /**
-         * Apply the chosen sorter and grouper to the list
-         * @param {sap.ui.base.Event} oEvent the confirm event
-         * @private
-         */
-        _applySortGroup: function (oEvent) {
-            var mParams = oEvent.getParameters(),
-                sPath,
-                bDescending,
-                aSorters = [];
-            
-            sPath = mParams.sortItem.getKey();
-            bDescending = mParams.sortDescending;
-            aSorters.push(new Sorter(sPath, bDescending));
-            this._oList.getBinding("items").sort(aSorters);
-        },
-
-        /**
          * Event handler for the list selection event
          * @param {sap.ui.base.Event} oEvent the list selectionChange event
          * @public
@@ -254,7 +191,6 @@ sap.ui.define([
             // set the layout property of FCL control to show two columns
             this.getModel("appView").setProperty("/layout", "TwoColumnsMidExpanded");
             this.getOwnerComponent()._platform = oItem.getBindingContext("json").getModel().getProperty(`${oItem.getBindingContextPath()}`);
-            console.log(this.getOwnerComponent()._platform);
             
             this.getRouter().navTo("object", {
                 // objectId : oItem.getBindingContext().getProperty("Id")
@@ -292,17 +228,6 @@ sap.ui.define([
                 // only reset the no data text to default when no new search was triggered
                 oViewModel.setProperty("/noDataText", this.getResourceBundle().getText("listListNoDataText"));
             }
-        },
-
-        /**
-         * Internal helper method that sets the filter bar visibility property and the label's caption to be shown
-         * @param {string} sFilterBarText the selected filter value
-         * @private
-         */
-        _updateFilterBar : function (sFilterBarText) {
-            var oViewModel = this.getModel("listView");
-            oViewModel.setProperty("/isFilterBarVisible", (this._oListFilterState.aFilter.length > 0));
-            oViewModel.setProperty("/filterBarLabel", this.getResourceBundle().getText("listFilterBarText", [sFilterBarText]));
         }
 
     });

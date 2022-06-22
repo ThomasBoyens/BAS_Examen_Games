@@ -1,61 +1,61 @@
 /* eslint-disable no-console */
 sap.ui.define([
     "./BaseController",
-    "sap/ui/model/json/JSONModel",
-    "sap/ui/model/Filter",
-    "sap/ui/model/Sorter",
-    "sap/ui/model/FilterOperator",
-    "sap/m/GroupHeaderListItem",
-    "sap/ui/Device",
-    "sap/ui/core/Fragment",
+    'sap/ui/core/library',
     "../model/formatter"
-], function (BaseController, JSONModel, Filter, Sorter, FilterOperator, GroupHeaderListItem, Device, Fragment, formatter) {
+], function (BaseController, coreLibrary, formatter) {
     "use strict";
+
+    const ValueState = coreLibrary.ValueState;
 
     return BaseController.extend("be.ap.edu.zsdgamelist.controller.GameCreate", {
 
         formatter: formatter,
 
-        /* =========================================================== */
-        /* lifecycle methods                                           */
-        /* =========================================================== */
-
-        /**
-         * Called when the list controller is instantiated. It sets up the event handling for the list/detail communication and other lifecycle tasks.
-         * @public
-         */
-        onInit : function () {
-            // Model used to manipulate control states. The chosen values make sure,
-            // detail page is busy indication immediately so there is no break in
-            // between the busy indication for loading the view's meta data
-            var oViewModel = new JSONModel({
-                isFilterBarVisible: true,
-                filterBarLabel: "",
-                busy: false,
-                delay: 0
-            });
-
-            this.getRouter().getRoute("gameCreate");
-
-            this.setModel(oViewModel, "gameCreateView");
-
-            const oModel = new sap.ui.model.json.JSONModel();
-            this.getView().setModel(oModel, 'json');
-        },
 
         /* =========================================================== */
         /* event handlers                                              */
         /* =========================================================== */
 
-        onSave: function (){
+        onSave: function () {
+            const currentDate = new Date();
+            const modifiedDate = currentDate.getFullYear()+ ("0"+(currentDate.getMonth()+1)).slice(-2) + ("0" + currentDate.getDate()).slice(-2);
 
-            console.log();
-            
-            // this.getModel().create("/GameSet", oGame,
-            // {
-            //     succes: function (oFeedback) { console.log(oFeedback);},
-            //     error: function (oError) { console.error(oError);}
-            //     });
+            const oGame = {
+              "Name" : this.getView().byId("name").getValue(),
+              "Developer" : this.getView().byId("developer").getValue(),
+              "Platform" : this.getView().byId("platform").getSelectedKey(),
+              "Genre" : this.getView().byId("genre").getSelectedKey(),
+              "ReleaseDate" : this.getView().byId("date").getValue(),
+              "ModifiedBy": "DEVSD-000",
+              "ModifiedOn": modifiedDate,
+              "Description" : this.getView().byId("description").getValue()
+            };
+           
+            this.getModel().create("/GameSet", oGame,
+            {
+                succes: function (oFeedback) { console.log(oFeedback);},
+                error: function (oError) { console.error(oError);}
+            });
+
+            this.clearForm();
+            this.getOwnerComponent().getRouter().navTo("list", { }, true);
+            window.location.reload();
+        },
+
+        onCancel: function () {
+
+            this.clearForm();
+            this.getOwnerComponent().getRouter().navTo("list", { }, true);
+        },
+
+        clearForm: function () {
+            this.getView().byId("name").setValue("");
+            this.getView().byId("developer").setValue("");
+            this.getView().byId("platform").setSelectedKey("");
+            this.getView().byId("genre").setSelectedKey("");
+            this.getView().byId("date").setValue("");
+            this.getView().byId("description").setValue("");
         },
 
         /**
@@ -78,19 +78,19 @@ sap.ui.define([
         },
 
         handleLiveChange: function (oEvent) {
-			var oTextArea = oEvent.getSource(),
-				iValueLength = oTextArea.getValue().length,
-				iMaxLength = oTextArea.getMaxLength(),
-				sState = iValueLength > iMaxLength ? ValueState.Warning : ValueState.None;
+            var oTextArea = oEvent.getSource(),
+                iValueLength = oTextArea.getValue().length,
+                iMaxLength = oTextArea.getMaxLength(),
+                sState = iValueLength > iMaxLength ? ValueState.Warning : ValueState.None;
 
-			oTextArea.setValueState(sState);
-		},
+            oTextArea.setValueState(sState);
+        },
 
         onPressAddGame: function () {
             this.getModel("appView").setProperty("/layout", "TwoColumnsMidExpanded");
-            
+
             var oRouter = sap.ui.core.UIComponent.getRouterFor(this);
-			oRouter.navTo("gameCreate", {} );
+            oRouter.navTo("gameCreate", {});
         },
 
         /* =========================================================== */
@@ -100,10 +100,10 @@ sap.ui.define([
         /**
         * Set the full screen mode to false and navigate to master page
         */
-       onCloseDetailPress: function () {
-        var oModel = this.getView().getModel("app");
-        this.getOwnerComponent().getRouter().navTo("list", { }, true);
-    },
+        onCloseDetailPress: function () {
+            var oModel = this.getView().getModel("app");
+            this.getOwnerComponent().getRouter().navTo("list", {}, true);
+        },
 
         /**
          * Toggle between full and non full screen mode.
